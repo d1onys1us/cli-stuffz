@@ -9,14 +9,14 @@ fn update_env(env_path: &str, env_sample_path: &str) -> std::io::Result<()> {
     // Split the contents into lines
     let sample_lines: Vec<&str> = sample_content.lines().collect();
     let env_lines: Vec<&str> = env_content.lines().collect();
-    
+
     let mut env_map = HashMap::new();
-    
+
     for line in env_lines {
         if line.is_empty() || line.starts_with('#') {
             continue;
         }
-        let key_value: Vec<&str> = line.split('=').collect();
+        let key_value: Vec<&str> = line.splitn(2, '=').collect();
         env_map.insert(key_value[0], line);
     }
 
@@ -33,8 +33,7 @@ fn update_env(env_path: &str, env_sample_path: &str) -> std::io::Result<()> {
             if let Some(env_line) = env_map.remove(key) {
                 output.push_str(env_line);
             } else {
-                let key_with_empty_value = format!("{}=", key);
-                output.push_str(&key_with_empty_value);
+                output.push_str(line);
             }
             output.push('\n');
         }
